@@ -1,0 +1,70 @@
+TAP version 13
+# Subtest: verified official alert takes precedence over a low model score
+ok 1 - verified official alert takes precedence over a low model score
+  ---
+  duration_ms: 0.951385
+  type: 'test'
+  ...
+# Subtest: confirmed incident cannot be downgraded by low model score
+ok 2 - confirmed incident cannot be downgraded by low model score
+  ---
+  duration_ms: 0.182234
+  type: 'test'
+  ...
+# Subtest: unverified report is not dismissed by model score
+ok 3 - unverified report is not dismissed by model score
+  ---
+  duration_ms: 0.102094
+  type: 'test'
+  ...
+# Subtest: missing/stale data returns uncertain, not low
+ok 4 - missing/stale data returns uncertain, not low
+  ---
+  duration_ms: 1.86343
+  type: 'test'
+  ...
+# Subtest: model score alone cannot produce reassuring status
+ok 5 - model score alone cannot produce reassuring status
+  ---
+  duration_ms: 0.216146
+  type: 'test'
+  ...
+# Subtest: poor spatial coverage returns uncertain
+ok 6 - poor spatial coverage returns uncertain
+  ---
+  duration_ms: 1.059243
+  type: 'test'
+  ...
+# Subtest: high calibrated score produces High only when all validation gates pass
+ok 7 - high calibrated score produces High only when all validation gates pass
+  ---
+  duration_ms: 0.135094
+  type: 'test'
+  ...
+# Subtest: watch calibrated score produces Watch only when all validation gates pass
+ok 8 - watch calibrated score produces Watch only when all validation gates pass
+  ---
+  duration_ms: 0.089505
+  type: 'test'
+  ...
+# Subtest: low calibrated score uses non-guaranteeing wording
+ok 9 - low calibrated score uses non-guaranteeing wording
+  ---
+  duration_ms: 0.509057
+  type: 'test'
+  ...
+# Subtest: invalid threshold order returns uncertain
+ok 10 - invalid threshold order returns uncertain
+  ---
+  duration_ms: 0.3777
+  type: 'test'
+  ...
+1..10
+# tests 10
+# suites 0
+# pass 10
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 75.993338
