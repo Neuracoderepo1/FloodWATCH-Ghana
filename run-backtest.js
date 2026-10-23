@@ -29,6 +29,9 @@ const records = fx.locations.map((l) => ({
     // riskScore / thresholds intentionally not supplied: none is validated yet.
   })).status,
   impacted: l.impacted === undefined ? null : l.impacted,
+  impactEvidence: l.impactEvidence,
+  date: l.date,
+  inventorySources: l.inventorySources,
   impactSource: l.impactSource,
   impactReportedAt: l.impactReportedAt,
   firstElevatedAt: l.firstElevatedAt,

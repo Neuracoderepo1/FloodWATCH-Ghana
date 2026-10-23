@@ -74,3 +74,61 @@ test("duplicate ids, unknown statuses and bad modes are rejected", () => {
   assert.throws(() => computeScorecard([rec("a", "Low", null)], { mode: "hindcast" }), /unknown status/);
   assert.throws(() => computeScorecard([], { mode: "nope" }), /mode/);
 });
+
+// ---- "no inventory record" evidence class (SYNTHETIC records only) ----
+const inv = [{ name: "synthetic-inventory", url: "https://example.invalid/inv", searchedAt: "2026-10-23", coverageStart: "2018-01-01", coverageEnd: "2026-06-27" }];
+const weak = (id, status, extra = {}) => ({
+  id, status, impacted: false, impactEvidence: "no_inventory_record",
+  date: "2024-05-10", inventorySources: inv, hasObservation: true, gridKey: id, ...extra
+});
+
+test("false alarm: confirmed rate and weaker upper bound are reported separately", () => {
+  const r = computeScorecard([
+    rec("synthetic-a", S.HIGH, true),                 // confirmed hit
+    rec("synthetic-b", S.HIGH, false),                // confirmed false alarm
+    weak("synthetic-c", S.HIGH),                      // High on a no-inventory-record day
+    weak("synthetic-d", S.UNCERTAIN)                  // not rated High, must not matter
+  ], { mode: "hindcast" });
+  assert.equal(r.falseAlarmRate, 1 / 2);                                  // 1 of 2 confirmed-labelled Highs
+  assert.equal(r.falseAlarmRateUpperBoundIncludingNoInventory, 2 / 3);    // adds the weak High to both sides
+  assert.match(r.falseAlarmNotes, /weaker evidence/);
+});
+
+test("no-inventory records never count as confirmed non-impact or touch detection/missed rates", () => {
+  const r = computeScorecard([rec("synthetic-a", S.HIGH, true), weak("synthetic-b", S.NO_ELEVATED_SIGNAL)], { mode: "hindcast" });
+  assert.equal(r.counts.notImpacted, 0);
+  assert.equal(r.counts.noInventoryRecord, 1);
+  assert.equal(r.counts.labelled, 1);
+  assert.equal(r.counts.unlabelled, 0);
+  assert.equal(r.detectionRate, 1);
+  assert.equal(r.missedEventRate, 0);
+  assert.ok(r.warnings.some((w) => /confirmed false alarms cannot be measured/.test(w)));
+  assert.ok(r.warnings.some((w) => /upper bound/.test(w)));
+});
+
+test("confirmed false-alarm rate stays null (not 0) when only weak negatives exist", () => {
+  const r = computeScorecard([weak("synthetic-a", S.HIGH), weak("synthetic-b", S.HIGH)], { mode: "hindcast" });
+  assert.equal(r.falseAlarmRate, null);
+  assert.equal(r.falseAlarmRateUpperBoundIncludingNoInventory, 1);
+});
+
+test("no_inventory_record is rejected without a documented search", () => {
+  const run = (x) => computeScorecard([weak("synthetic-a", S.HIGH, x)], { mode: "hindcast" });
+  assert.throws(() => run({ inventorySources: undefined }), /inventorySources/);
+  assert.throws(() => run({ inventorySources: [] }), /inventorySources/);
+  assert.throws(() => run({ inventorySources: [{ name: "x" }] }), /needs name, url/);
+  assert.throws(() => run({ date: undefined }), /requires date/);
+  assert.throws(() => run({ date: "10/05/2024" }), /requires date/);
+  assert.throws(() => run({ impacted: true }), /requires impacted === false/);
+  assert.throws(() => run({ impactEvidence: "vibes" }), /unknown impactEvidence/);
+});
+
+test("no_inventory_record is rejected when the date is outside the inventory's coverage", () => {
+  assert.throws(() => computeScorecard([weak("synthetic-a", S.HIGH, { date: "2026-06-29" })], { mode: "hindcast" }), /outside the coverage window/);
+  assert.throws(() => computeScorecard([weak("synthetic-a", S.HIGH, { date: "2017-12-31" })], { mode: "hindcast" }), /outside the coverage window/);
+  assert.doesNotThrow(() => computeScorecard([weak("synthetic-a", S.HIGH, { date: "2026-06-27" })], { mode: "hindcast" }));
+});
+
+test("a confirmed label still needs an independent source even when weak records exist", () => {
+  assert.throws(() => computeScorecard([{ ...rec("synthetic-a", S.HIGH, false), impactSource: "" }, weak("synthetic-b", S.HIGH)], { mode: "hindcast" }), /independent source/);
+});

@@ -15,7 +15,7 @@ assessment. For official alerts follow NADMO and GMet.
 - `*.test.js` — run with `node --test`
 - `scorecard.js`, `run-backtest.js` — missed-event, detection, false-alarm, lead-time and coverage scoring (hindcast and early-warning modes)
 - `fixtures/` — place `accra-flood-2026-06.json` here to enable the event back-test (see `fixtures/README.md`)
-- `docs/` — original patch notes and test output
+- `docs/` — original patch notes, test output, `evidence-log.md` (what is verified vs reported) and `gmet-data-request.md` (draft request for station rainfall)
 
 ## Open items before any public rating
 1. Supply sourced event data (28–29 June; rainfall mismatch of ~140 mm reported vs 3.5–7.5 mm in Open-Meteo still unreconciled) and run `node run-backtest.js` (currently nothing is scored).

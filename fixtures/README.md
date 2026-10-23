@@ -37,3 +37,29 @@ Run two separate fixtures/modes: `hindcast` (observed event data allowed) and
   ]
 }
 ```
+
+## Weaker label: `impactEvidence: "no_inventory_record"`
+
+A sourced "no flooding on day X" statement is rare. For heavy-rain days (gauge
+reading of 40 mm or more) with no flood in the inventories you searched, you may
+record `impacted: false` with:
+
+```json
+{
+  "impacted": false,
+  "impactEvidence": "no_inventory_record",
+  "date": "2023-05-14",
+  "inventorySources": [
+    {"name": "NADMO situation reports", "url": "https://...", "searchedAt": "2026-10-23",
+     "coverageStart": "2018-01-01", "coverageEnd": "2026-06-27"}
+  ]
+}
+```
+
+This is **not** proof that nothing flooded. The scorecard keeps it out of every
+confirmed count and reports false alarms two ways: `falseAlarmRate` (confirmed
+outcomes only) and `falseAlarmRateUpperBoundIncludingNoInventory` (also counts
+these days). Records are rejected unless `date` is inside each inventory's
+coverage window and every inventory source is fully described. The gauge reading
+that makes the day "heavy rain" must still come from a station or an official
+statement, not from reanalysis.
