@@ -55,6 +55,7 @@ const RQ=FloodWatchRiskQuality,ST=RQ.STATUS;
 const CLS={[ST.EMERGENCY_ALERT]:'high',[ST.CONFIRMED_INCIDENT]:'high',[ST.HIGH]:'high',[ST.UNVERIFIED_REPORT]:'watch',[ST.WATCH]:'watch',[ST.NO_ELEVATED_SIGNAL]:'low',[ST.UNCERTAIN]:'unc'};
 const ORD={[ST.EMERGENCY_ALERT]:0,[ST.CONFIRMED_INCIDENT]:1,[ST.HIGH]:2,[ST.UNVERIFIED_REPORT]:3,[ST.WATCH]:4,[ST.UNCERTAIN]:5,[ST.NO_ELEVATED_SIGNAL]:6};
 const MISS={dataFresh:'fresh live data',spatialCoverageAdequate:'adequate spatial coverage',modelValidatedAgainstMultipleEvents:'validation on multiple flood events',exposureDataValidated:'validated exposure data',hydrologyDataValidated:'validated hydrology data',thresholdsEventValidated:'event-validated thresholds',sourceTimestampAvailable:'source timestamp',validCalibratedScoreAndThresholds:'calibrated score and thresholds'};
+/* ts is always false: the page records when it fetched data, not the weather model's run time, so no source timestamp is claimed. */
 function classify(live,ts){return RQ.classifyFloodStatus(FloodWatchInputs.buildClassifierInput({live,hasSourceTimestamp:ts}))}function spark(s){const m=Math.max(10,...s),w=100/s.length;return '<svg viewBox="0 0 100 46" preserveAspectRatio="none">'+s.map((v,i)=>`<rect class="${i>=24?'f':''}" x="${i*w}" y="${46-v/m*44}" width="${w*.7}" height="${v/m*44}"/>`).join('')+'<line x1="50" x2="50" y1="0" y2="46"/></svg>'}
 function tline(t,fl){const p=[];if(t.e!=null)p.push(Math.round(t.e)+' m elevation'+(t.rel<=-2?', '+Math.abs(t.rel).toFixed(0)+' m below surroundings':''));
  if(t.w!=null)p.push(t.w>=999?'no mapped waterway within 600 m':'mapped waterway '+t.w+' m away');
@@ -62,7 +63,7 @@ function tline(t,fl){const p=[];if(t.e!=null)p.push(Math.round(t.e)+' m elevatio
  return (fl.low?'<span class="fl">Low-lying</span>':'')+(fl.near?'<span class="fl">Near waterway</span>':'')+p.join(' · ')}
 Promise.all([load()]).then(async([{live,d}])=>{const i0=48+new Date().getUTCHours();
  const T=live?await terrain():{t:N.map((_,i)=>S_T(i)),el:true,wa:true};
- const R=d.map((s,k)=>{const nx=s.slice(i0,i0+24),n=sum(nx),p=Math.max(...nx),fl=flags(T.t[k]),c=classify(live,live&&!!d.length);return{name:N[k][0],past:sum(s.slice(i0-24,i0)),n,p,c,fl,tr:T.t[k],s:s.slice(i0-24,i0+24)}});
+ const R=d.map((s,k)=>{const nx=s.slice(i0,i0+24),n=sum(nx),p=Math.max(...nx),fl=flags(T.t[k]),c=classify(live,false);return{name:N[k][0],past:sum(s.slice(i0-24,i0)),n,p,c,fl,tr:T.t[k],s:s.slice(i0-24,i0+24)}});
  R.sort((a,b)=>ORD[a.c.status]-ORD[b.c.status]||b.n-a.n);
  document.getElementById('ban').innerHTML='<div class="ban"><b>Not a validated flood forecast.</b> Risk ratings are withheld (“Risk uncertain”) until the model is validated against multiple flood events. Rainfall figures below are unvalidated model output for context only. For official alerts follow NADMO and GMet.</div>'+(live?'':'<div class="ban"><b>Sample data.</b> This preview can’t reach the live rainfall, elevation or waterway feeds, so everything shown is illustrative.</div>');
  const st=document.getElementById('st');st.className='st'+(live?'':' s');
