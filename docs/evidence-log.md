@@ -33,6 +33,11 @@ and sourced labels are in place. Home addresses are deliberately not recorded.
 | Nima, Kaneshie, Dansoman | null | GNA mentions damage "earlier this season", undated; **not** a 29 June label | GNA |
 | Kaneshie, Circle (flooded), Cantonments (dry) | null | rejected: real-estate blog dated 2026-10-03, not independent | ghanarealtyconnect.com |
 
+## Model rainfall at Tse-Addo (Open-Meteo archive, point query, GMT)
+Hourly series is saved in `fixtures/draft/tse-addo.json`. Daily totals: 28 Jun 3.0 mm, 29 Jun 6.0 mm; peak 1.3 mm/h at 10:00 UTC on 29 Jun; 08:00-11:00 UTC total 3.3 mm; 18:00 on 28 Jun to 07:00 on 29 Jun total 0.4 mm.
+At 09:54 UTC on 29 Jun the owner's video shows the street flooded and rain falling, while the model shows about 1 mm/h. Against GMet's 169.2 mm for the day, this model output would have given the old dashboard rainfall rule no signal at all. Single point, single event: this supports keeping the validation gates false; it is not a calibration.
+The lat/lon returned by both the forecast and archive endpoints was identical, so it is an echo of the query point and does not identify the grid cell.
+
 ## Pre-event forecast information
 | Item | Status | Source |
 |---|---|---|
