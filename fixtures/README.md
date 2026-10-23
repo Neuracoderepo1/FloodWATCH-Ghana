@@ -1,24 +1,39 @@
-# June 28 regression fixture
+# Accra flood back-test fixture (28–29 June 2026)
 
-Place the event data at `fixtures/june28.json`. Until it exists, the
-fixture-dependent regression tests are reported as **skipped**, not passed.
+Put the event data at `fixtures/accra-flood-2026-06.json` and run
+`node run-backtest.js`. With no fixture it exits with code 2 and scores nothing;
+the fixture-dependent tests in `regression.accra-flood-2026-06.test.js` are
+reported as **skipped**, never passed.
 
-Expected shape:
+**Rules:** never invent or infer labels. `impacted` is `true`/`false` only with a
+cited independent `impactSource`; otherwise `null`. Preserve the source and
+report time of every impact figure (early counts change). Include wet days
+*without* serious flooding, or false alarms cannot be measured. Record the actual
+weather grid cell (`gridKey`) so shared cells are not counted as independent.
+
+Run two separate fixtures/modes: `hindcast` (observed event data allowed) and
+`early-warning` (every input issued at or before `cutoffAt`, e.g.
+`2026-06-28T22:00:00Z`; later data is rejected as leakage).
 
 ```json
 {
-  "event": "2026-06-28 Greater Accra flooding",
-  "source": "where the observations came from (NADMO report, news, gauge, etc.)",
-  "neighborhoods": [
+  "event": "2026-06-28/29 Greater Accra flooding",
+  "mode": "early-warning",
+  "cutoffAt": "2026-06-28T22:00:00Z",
+  "rainfallReconciliation": "note on how reported ~140 mm vs Open-Meteo values were reconciled",
+  "locations": [
     {
-      "name": "Kaneshie",
-      "floodedObserved": true,
-      "observedSource": "citation or URL",
-      "hourlyPrecipMm": [0, 0, 1.2, "... 96 values: 48 past + 48 forecast hours as the dashboard sees them"]
+      "id": "kaneshie-2026-06-28",
+      "gridKey": "5.55,-0.25",
+      "hasObservation": true,
+      "dataFresh": true,
+      "dataIssuedAt": "2026-06-28T21:00:00Z",
+      "impacted": true,
+      "impactSource": "citation or URL, with report time",
+      "impactReportedAt": "2026-06-29T03:30:00Z",
+      "firstElevatedAt": null,
+      "hourlyPrecipMm": [0, 0, 1.2]
     }
   ]
 }
 ```
-
-Only include `floodedObserved: true/false` where there is a real, cited
-observation. Do not infer it from the model rainfall.

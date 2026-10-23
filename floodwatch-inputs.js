@@ -17,7 +17,7 @@
 
   /**
    * Validation state, maintained by humans. All false today:
-   * - Only one event (June 28) is available and thresholds were not fitted to it.
+   * - Only one event (28–29 June 2026) is available and thresholds were not fitted to it.
    * - Exposure / hydrology inputs are a ~90 m DEM and incomplete OSM waterways.
    * - Open-Meteo is a coarse model grid, so 13 point samples are not adequate coverage.
    */
