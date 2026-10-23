@@ -109,3 +109,9 @@ test("event: fixture passes scorecard validation (sources cited, no leakage, gri
   }));
   assert.doesNotThrow(() => require("./scorecard.js").computeScorecard(records, { mode: fx.mode, cutoffAt: fx.cutoffAt }));
 });
+
+test("dashboard never claims a source timestamp it does not record", () => {
+  const html = fs.readFileSync(path.join(__dirname, "index.html"), "utf8");
+  assert.ok(/classify\(live,false\)/.test(html), "index.html must pass hasSourceTimestamp=false until a real model timestamp is captured");
+  assert.ok(!/classify\(live,live/.test(html), "index.html must not derive a timestamp from fetch success");
+});
