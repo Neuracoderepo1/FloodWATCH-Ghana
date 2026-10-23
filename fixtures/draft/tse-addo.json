@@ -1,0 +1,27 @@
+{
+  "_note": "DRAFT, not read by tests or run-backtest.js. Move into fixtures/accra-flood-2026-06.json only after gridKey is resolved to a real cell centre and at least one dry/no-impact location exists.",
+  "event": "2026-06-28/29 Greater Accra flooding",
+  "location": {
+    "id": "tse-addo",
+    "name": "Tse-Addo (La/Teshie side of Kpeshi Lagoon)",
+    "approxLat": 5.589,
+    "approxLon": -0.149,
+    "coordinatePrecision": "~100 m; rounded from the owner's measured map pin; street address intentionally not recorded",
+    "gridKey": null,
+    "gridKeyNote": "UNRESOLVED. Open-Meteo returned identical lat/lon (5.5887523,-0.14935303) from both the forecast and archive endpoints, which use different grids, so these look like an echo of the coordinates entered, not a cell centre. Elevation reported at that point: 17.0 m.",
+    "impacted": true,
+    "impactSource": "First-hand video recorded by the project owner; embedded QuickTime metadata creation time 2026-06-29T09:54:40Z, iPhone XR. Photos have no EXIF. Location is the owner's statement.",
+    "impactEventTime": "2026-06-29T09:54:40Z",
+    "ownerRecollection": "Rain from evening of 28 Jun; flooding began about 08:00-09:00 on 29 Jun and kept rising until evening; a bungalow fence nearly submerged.",
+    "hasObservation": false
+  },
+  "modelRainfall": {
+    "source": "Open-Meteo archive API (archive-api.open-meteo.com), run by the project owner and pasted into the session on 2026-10-23, timezone GMT, point query",
+    "unit": "mm/hour",
+    "start": "2026-06-28T00:00Z",
+    "hourly": [0.1,0.1,0.1,0.1,0.1,0.1,0.0,0.0,0.1,0.1,0.2,0.1,0.5,0.4,0.4,0.1,0.1,0.1,0.2,0.0,0.0,0.0,0.1,0.0,0.0,0.1,0.0,0.0,0.0,0.0,0.0,0.0,0.3,0.7,1.3,1.0,0.9,0.3,0.2,0.2,0.1,0.1,0.1,0.4,0.3,0.0,0.0,0.0],
+    "dailyTotals": {"2026-06-28": 3.0, "2026-06-29": 6.0},
+    "peak": {"mmPerHour": 1.3, "time": "2026-06-29T10:00Z"},
+    "context": "GMet reported 169.2 mm for 29 Jun (Graphic Online 2026-06-30). The model total is about 3.5% of that, and its peak hour is 1.3 mm/h while the owner's video shows flooding at 09:54Z."
+  }
+}
